@@ -22,3 +22,6 @@ jobs:
       run: |
         podman build -t $REGISTRY_URL/rhel-bootc:bootc-checks -f Containerfile 
         podman push $REGISTRY_URL/rhel-bootc:bootc-checks
+      env:
+        REGISTRY_URL: quay.io/ebelarte
+
