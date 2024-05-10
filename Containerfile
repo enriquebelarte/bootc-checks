@@ -32,7 +32,7 @@ RUN echo "[vault]" > /etc/yum.repos.d/vault.repo \
     && echo "enabled=1" >> /etc/yum.repos.d/vault.repo \
     && echo "gpgcheck=0" >> /etc/yum.repos.d/vault.repo
 # Add specific kernel version to DKMS
-RUN echo "DEFAULT_KERNEL=\"${KERNEL_VERSION}.${TARGET_ARCH}" >> /etc/dkms/framework.conf
+RUN echo "DEFAULT_KERNEL=\"${KERNEL_VERSION}.${TARGET_ARCH}\"" >> /etc/dkms/framework.conf
 # Install habanalabs modules,firmware and libraries
 RUN dnf install -y libarchive* pandoc \ 
     habanalabs-firmware-${DRIVER_VERSION}.${REDHAT_VERSION} \
