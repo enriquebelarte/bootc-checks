@@ -22,9 +22,9 @@ RUN if [ "${OS_VERSION_MAJOR}" == "" ]; then \
        fi \
     && if [ -f /etc/centos-release ]; then \
        dnf -y config-manager --set-enabled crb \
-       && dnf -y install epel-release epel-next-release ninja-build dkms;\
+       && dnf -y install epel-release epel-next-release ninja-build;\
        fi \
-    && dnf install -y make git kmod kernel-headers-${KERNEL_VERSION}.${TARGET_ARCH}
+    && dnf install -y make git kmod kernel-headers-${KERNEL_VERSION}.${TARGET_ARCH} dkms
 # Create the repository configuration file
 RUN echo "[vault]" > /etc/yum.repos.d/vault.repo \
     && echo "name=Habana Vault" >> /etc/yum.repos.d/vault.repo \
