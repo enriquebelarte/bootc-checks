@@ -20,7 +20,7 @@ RUN if [ "${OS_VERSION_MAJOR}" == "" ]; then \
     && if [ -f /etc/redhat-release ]; then \
        dnf install -y https://mirror.stream.centos.org/9-stream/CRB/x86_64/os/Packages/ninja-build-1.10.2-6.el9.x86_64.rpm ;\
        fi \
-    && dnf install -y make git kmod kernel-headers-${KERNEL_VERSION} \
+    && dnf install -y make git kmod kernel-headers-${KERNEL_VERSION}.${TARGET_ARCH} \
        http://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm \
     && if [ -f /etc/centos-release ]; then \
        dnf -y install ninja-build ;\
