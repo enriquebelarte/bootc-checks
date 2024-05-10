@@ -21,10 +21,10 @@ RUN if [ "${OS_VERSION_MAJOR}" == "" ]; then \
        dnf install -y https://mirror.stream.centos.org/9-stream/CRB/x86_64/os/Packages/ninja-build-1.10.2-6.el9.x86_64.rpm ;\
        fi \
     && if [ -f /etc/centos-release ]; then \
-       dnf -y install ninja-build ;\
+       dnf -y config-manager --set-enabled crb \
+       && dnf -y install epel-release epel-next-release ninja-build dkms;\
        fi \
-    && dnf install -y make git dkms kmod kernel-headers-${KERNEL_VERSION}.${TARGET_ARCH} \
-       http://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm 
+    && dnf install -y make git kmod kernel-headers-${KERNEL_VERSION}.${TARGET_ARCH}
 # Create the repository configuration file
 RUN echo "[vault]" > /etc/yum.repos.d/vault.repo \
     && echo "name=Habana Vault" >> /etc/yum.repos.d/vault.repo \
