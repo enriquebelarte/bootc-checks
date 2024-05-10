@@ -20,5 +20,5 @@ jobs:
 
     - name: Build and push container bootc image
       run: |
-        podman build -t $REGISTRY_URL/rhel-bootc:bootc-checks .
+        podman build -t $REGISTRY_URL/rhel-bootc:bootc-checks -f Containerfile 
         podman push $REGISTRY_URL/rhel-bootc:bootc-checks
