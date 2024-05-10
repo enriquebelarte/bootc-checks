@@ -22,8 +22,8 @@ RUN if [ "${OS_VERSION_MAJOR}" == "" ]; then \
        fi \
     && if [ -f /etc/centos-release ]; then \
        dnf -y install ninja-build ;\
-       fi
-RUN dnf install -y make git kmod kernel-headers-${KERNEL_VERSION}.${TARGET_ARCH} \
+       fi \
+    && dnf install -y make git kmod kernel-headers-${KERNEL_VERSION}.${TARGET_ARCH} \
        http://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm 
 # Create the repository configuration file
 RUN echo "[vault]" > /etc/yum.repos.d/vault.repo \
