@@ -18,7 +18,8 @@ RUN if [ "${OS_VERSION_MAJOR}" == "" ]; then \
        export KERNEL_VERSION=$(dnf info kernel | awk '/Version/ {v=$3} /Release/ {r=$3} END {print v"-"r}') ;\
        fi \
     && if [ -f /etc/redhat-release ]; then \
-       rm -rf /etc/rhsm-host \
+       dnf install -y yum \
+       && rm -rf /etc/rhsm-host \
        && yum --enablerepo=codeready-builder-for-rhel-9-x86_64-rpms install \
        && ninja-build \
        && uid_wrapper -y \
