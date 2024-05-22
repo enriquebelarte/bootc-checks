@@ -6,6 +6,10 @@ ARG DRIVER_VERSION=1.15.1-15
 ARG TARGET_ARCH=''
 ARG KERNEL_VERSION=''
 ARG REDHAT_VERSION='el9'
+ARG KEY_ID=''
+ARG ORG_ID=''
+
+ENV SMDEV_CONTAINER_OFF=1
 
 RUN if [ "${OS_VERSION_MAJOR}" == "" ]; then \
         . /etc/os-release \
@@ -18,13 +22,10 @@ RUN if [ "${OS_VERSION_MAJOR}" == "" ]; then \
        export KERNEL_VERSION=$(dnf info kernel | awk '/Version/ {v=$3} /Release/ {r=$3} END {print v"-"r}') ;\
        fi \
     && if [ -f /etc/redhat-release ]; then \
-       dnf install -y yum \
-       && rm -rf /etc/rhsm-host \
-       && yum --enablerepo=codeready-builder-for-rhel-9-x86_64-rpms install \
-       && ninja-build \
-       && uid_wrapper -y \
-       && yum clean all -y \
-       && ln -s /run/secrets/rhsm /etc/rhsm-host;\
+       subscription-manager register --org=$ORG_ID --activationkey=$KEY_ID \
+       && subscription-manager repos --enable codeready-builder-for-rhel-9-$(arch)-rpms \
+       && dnf -y update \       
+       && dnf install -y ninha-build;\
        fi \
     && if [ -f /etc/centos-release ]; then \
        dnf -y config-manager --set-enabled crb \
