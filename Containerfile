@@ -18,9 +18,12 @@ RUN if [ "${OS_VERSION_MAJOR}" == "" ]; then \
        export KERNEL_VERSION=$(dnf info kernel | awk '/Version/ {v=$3} /Release/ {r=$3} END {print v"-"r}') ;\
        fi \
     && if [ -f /etc/redhat-release ]; then \
-       #dnf install -y https://mirror.stream.centos.org/9-stream/CRB/x86_64/os/Packages/ninja-build-1.10.2-6.el9.x86_64.rpm ;\
-       subscription-manager repos --enable codeready-builder-for-rhel-9-$(arch)-rpms \
-       && dnf -y install ninja-build;\
+       rm -rf /etc/rhsm-host \
+       && yum --enablerepo=codeready-builder-for-rhel-9-x86_64-rpms install \
+       && ninja-build \
+       && uid_wrapper -y \
+       && yum clean all -y \
+       && ln -s /run/secrets/rhsm /etc/rhsm-host;\
        fi \
     && if [ -f /etc/centos-release ]; then \
        dnf -y config-manager --set-enabled crb \
