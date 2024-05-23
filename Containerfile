@@ -22,8 +22,7 @@ RUN if [ "${OS_VERSION_MAJOR}" == "" ]; then \
        export KERNEL_VERSION=$(dnf info kernel | awk '/Version/ {v=$3} /Release/ {r=$3} END {print v"-"r}') ;\
        fi \
     && if [ -f /etc/redhat-release ]; then \
-       subscription-manager register \
-       && subscription-manager repos --enable codeready-builder-for-rhel-9-$(arch)-rpms \
+       subscription-manager repos --enable codeready-builder-for-rhel-9-$(arch)-rpms \
        && dnf -y update \
        && dnf -y install ninja-build; \
        fi \
