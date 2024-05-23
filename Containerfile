@@ -47,5 +47,5 @@ RUN dnf install -y libarchive* pandoc \
     habanalabs-firmware-tools-${DRIVER_VERSION}.${REDHAT_VERSION} \
     habanalabs-thunk-${DRIVER_VERSION}.${REDHAT_VERSION} \
     && dnf clean all
-RUN depmod -a 
+RUN depmod -a
 
