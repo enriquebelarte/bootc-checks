@@ -36,7 +36,7 @@ RUN echo "[vault]" > /etc/yum.repos.d/vault.repo \
 # Install habanalabs modules,firmware and libraries
 RUN if [ -f /etc/centos-release ]; then \
        TMPDIR=/tmp/repos-tmp-dir yum -y update \
-       && yum -y install epel-release \
+       && TMPDIR=/tmp/repos-tmp-dir yum -y install epel-release \
        && crb enable \
        && TMPDIR=/tmp/repos-tmp-dir yum -y install ninja-build pandoc;\
     fi
