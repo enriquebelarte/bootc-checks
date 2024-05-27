@@ -42,24 +42,24 @@ RUN echo "[vault]" > /etc/yum.repos.d/vault.repo \
     && echo "enabled=1" >> /etc/yum.repos.d/vault.repo \
     && echo "gpgcheck=0" >> /etc/yum.repos.d/vault.repo
 # Install habanalabs modules,firmware and libraries
-RUN mkdir -p /tmp/extra-repo && chown root:root /tmp/extra-repo && chmod 1777 /tmp/extra-repo    
+RUN mkdir -p /temp/extra-repo && chown root:root /temp/extra-repo && chmod 1777 /temp/extra-repo    
 
-RUN TMPDIR=/tmp/extra-repo yum -y update && yum -y install habanalabs-firmware-${DRIVER_VERSION}.${REDHAT_VERSION} \
+RUN TMPDIR=/temp/extra-repo yum -y update && TMPDIR=/temp/extra-repo yum -y install habanalabs-firmware-${DRIVER_VERSION}.${REDHAT_VERSION} \
     habanalabs-${DRIVER_VERSION}.${REDHAT_VERSION} \
     habanalabs-rdma-core-${DRIVER_VERSION}.${REDHAT_VERSION} \
     habanalabs-firmware-tools-${DRIVER_VERSION}.${REDHAT_VERSION} \
     habanalabs-thunk-${DRIVER_VERSION}.${REDHAT_VERSION}
     
-RUN depmod -a ${KERNEL_VERSION} 
+#RUN depmod -a ${KERNEL_VERSION} 
 
 # Include growfs service
 #COPY build/usr /usr
 
-ARG INSTRUCTLAB_IMAGE
-ARG VLLM_IMAGE
+#ARG INSTRUCTLAB_IMAGE
+#ARG VLLM_IMAGE
 
 # Prepull the instructlab image
-RUN IID=$(podman --root /usr/lib/containers/storage pull oci:/run/.input/vllm) && \
-    podman --root /usr/lib/containers/storage image tag ${IID} ${VLLM_IMAGE}
-RUN IID=$(podman --root /usr/lib/containers/storage pull oci:/run/.input/instructlab-intel) && \
-    podman --root /usr/lib/containers/storage image tag ${IID} ${INSTRUCTLAB_IMAGE}
+#RUN IID=$(podman --root /usr/lib/containers/storage pull oci:/run/.input/vllm) && \
+#    podman --root /usr/lib/containers/storage image tag ${IID} ${VLLM_IMAGE}
+#RUN IID=$(podman --root /usr/lib/containers/storage pull oci:/run/.input/instructlab-intel) && \
+#    podman --root /usr/lib/containers/storage image tag ${IID} ${INSTRUCTLAB_IMAGE}
