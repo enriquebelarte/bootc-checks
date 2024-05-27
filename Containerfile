@@ -1,4 +1,5 @@
-ARG BASEIMAGE="quay.io/centos-bootc/centos-bootc:stream9"
+#ARG BASEIMAGE="quay.io/centos-bootc/centos-bootc:stream9"
+ARG BASEIMAGE="quay.io/centos/centos:stream9"
 FROM ${BASEIMAGE}
 
 ARG OS_VERSION_MAJOR=''
