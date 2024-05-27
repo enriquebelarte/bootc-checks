@@ -26,7 +26,15 @@ RUN . /etc/os-release \
        && export KERNEL_VERSION="${VERSION}-${RELEASE}" ;\
        fi \ 
     && TMPDIR=/tmp/repos-tmp-dir yum -y update && yum -y install kernel-headers-${KERNEL_VERSION} make git kmod
- 
+
+RUN if [ -f /etc/centos-release ]; then \
+       TMPDIR=/tmp/repos-tmp-dir yum -y update \
+       && TMPDIR=/tmp/repos-tmp-dir yum -y install epel-release \
+       && crb enable ;\
+    fi
+RUN TMPDIR=/tmp/repos-tmp-dir yum -y install ninja-build pandoc
+
+
 # Create the repository configuration file
 RUN echo "[vault]" > /etc/yum.repos.d/vault.repo \
     && echo "name=Habana Vault" >> /etc/yum.repos.d/vault.repo \
@@ -34,14 +42,7 @@ RUN echo "[vault]" > /etc/yum.repos.d/vault.repo \
     && echo "enabled=1" >> /etc/yum.repos.d/vault.repo \
     && echo "gpgcheck=0" >> /etc/yum.repos.d/vault.repo
 # Install habanalabs modules,firmware and libraries
-RUN if [ -f /etc/centos-release ]; then \
-       TMPDIR=/tmp/repos-tmp-dir yum -y update \
-       && TMPDIR=/tmp/repos-tmp-dir yum -y install epel-release \
-       && crb enable ;\
-    fi
- 
-RUN TMPDIR=/tmp/repos-tmp-dir yum install -y ninja-build pandoc \
-    habanalabs-firmware-${DRIVER_VERSION}.${REDHAT_VERSION} \
+RUN habanalabs-firmware-${DRIVER_VERSION}.${REDHAT_VERSION} \
     habanalabs-${DRIVER_VERSION}.${REDHAT_VERSION} \
     habanalabs-rdma-core-${DRIVER_VERSION}.${REDHAT_VERSION} \
     habanalabs-firmware-tools-${DRIVER_VERSION}.${REDHAT_VERSION} \
