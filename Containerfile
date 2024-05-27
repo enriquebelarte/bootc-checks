@@ -37,7 +37,7 @@ RUN if [ -f /etc/centos-release ]; then \
        && dnf -y install epel-release \
        && crb enable \
        && dnf -y install ninja-build pandoc;\
-    fi \
+    fi
  
 RUN dnf install -y habanalabs-firmware-${DRIVER_VERSION}.${REDHAT_VERSION} \
     habanalabs-${DRIVER_VERSION}.${REDHAT_VERSION} \
