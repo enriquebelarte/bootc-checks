@@ -38,9 +38,8 @@ RUN if [ -f /etc/centos-release ]; then \
        && crb enable \
        && dnf -y install ninja-build pandoc;\
     fi \
-    && dnf -y update \
-    && dnf install -y dkms ninja-build pandoc \
-    && dnf install -y habanalabs-firmware-${DRIVER_VERSION}.${REDHAT_VERSION} \
+ 
+RUN dnf install -y habanalabs-firmware-${DRIVER_VERSION}.${REDHAT_VERSION} \
     habanalabs-${DRIVER_VERSION}.${REDHAT_VERSION} \
     habanalabs-rdma-core-${DRIVER_VERSION}.${REDHAT_VERSION} \
     habanalabs-firmware-tools-${DRIVER_VERSION}.${REDHAT_VERSION} \
