@@ -43,7 +43,7 @@ RUN echo "[vault]" > /etc/yum.repos.d/vault.repo \
     && echo "gpgcheck=0" >> /etc/yum.repos.d/vault.repo
 # Install habanalabs modules,firmware and libraries
 RUN mkdir -p /temp/extra-repo && chown root:root /temp/extra-repo && chmod 1777 /temp/extra-repo    
-
+RUN restorecon -R /tmp
 RUN TMPDIR=/temp/extra-repo yum -y update && TMPDIR=/temp/extra-repo yum -y install habanalabs-firmware-${DRIVER_VERSION}.${REDHAT_VERSION} \
     habanalabs-${DRIVER_VERSION}.${REDHAT_VERSION} \
     habanalabs-rdma-core-${DRIVER_VERSION}.${REDHAT_VERSION} \
