@@ -38,7 +38,7 @@ RUN if [ -f /etc/centos-release ]; then \
        TMPDIR=/tmp/repos-tmp-dir yum -y update \
        && yum -y install epel-release \
        && crb enable \
-       && yum -y install ninja-build pandoc;\
+       && TMPDIR=/tmp/repos-tmp-dir yum -y install ninja-build pandoc;\
     fi
  
 RUN TMPDIR=/tmp/repos-tmp-dir yum install -y habanalabs-firmware-${DRIVER_VERSION}.${REDHAT_VERSION} \
