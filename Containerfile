@@ -32,7 +32,7 @@ RUN if [ -f /etc/centos-release ]; then \
        && TMPDIR=/tmp/repos-tmp-dir yum -y install epel-release \
        && crb enable ;\
     fi
-RUN TMPDIR=/tmp/repos-tmp-dir yum -y install ninja-build pandoc
+#RUN TMPDIR=/tmp/repos-tmp-dir yum -y install ninja-build pandoc
 
 
 # Create the repository configuration file
