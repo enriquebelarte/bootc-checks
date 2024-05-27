@@ -10,8 +10,7 @@ ARG REDHAT_VERSION='el9'
 # Workaround? for dnf temp dir permission issue in bootc images
 RUN echo "cachedir=/tmp/dnf-cache" >> /etc/dnf/dnf.conf \
     && mkdir -p /tmp/dnf-cache && chown root:root /tmp/dnf-cache && chmod 755 /tmp/dnf-cache
-#RUN echo "reposdir=/tmp/repos-tmp-dir" >> /etc/dnf/dnf.conf \
-#    && mkdir -p /tmp/repos-tmp-dir && chown root:root /tmp/repos-tmp-dir && chmod 755 /tmp/repos-tmp-dir
+RUN mkdir -p /tmp/repos-tmp-dir && chown root:root /tmp/repos-tmp-dir && chmod 755 /tmp/repos-tmp-dir
 
 
 
@@ -26,7 +25,7 @@ RUN . /etc/os-release \
        && VERSION=$(dnf info ${NEWER_KERNEL_CORE} | awk -F: '/^Version/{print $2}' | tr -d '[:blank:]') \
        && export KERNEL_VERSION="${VERSION}-${RELEASE}" ;\
        fi \ 
-    && yum -y update && yum -y install kernel-headers-${KERNEL_VERSION} make git kmod
+    && TMPDIR=/tmp/repos-tmp-dir yum -y update && yum -y install kernel-headers-${KERNEL_VERSION} make git kmod
  
 # Create the repository configuration file
 RUN echo "[vault]" > /etc/yum.repos.d/vault.repo \
@@ -36,13 +35,13 @@ RUN echo "[vault]" > /etc/yum.repos.d/vault.repo \
     && echo "gpgcheck=0" >> /etc/yum.repos.d/vault.repo
 # Install habanalabs modules,firmware and libraries
 RUN if [ -f /etc/centos-release ]; then \
-       dnf -y update \
+       TMPDIR=/tmp/repos-tmp-dir dnf -y update \
        && dnf -y install epel-release \
        && crb enable \
        && dnf -y install ninja-build pandoc;\
     fi
  
-RUN dnf install -y habanalabs-firmware-${DRIVER_VERSION}.${REDHAT_VERSION} \
+RUN TMPDIR=/tmp/repos-tmp-dir dnf install -y habanalabs-firmware-${DRIVER_VERSION}.${REDHAT_VERSION} \
     habanalabs-${DRIVER_VERSION}.${REDHAT_VERSION} \
     habanalabs-rdma-core-${DRIVER_VERSION}.${REDHAT_VERSION} \
     habanalabs-firmware-tools-${DRIVER_VERSION}.${REDHAT_VERSION} \
