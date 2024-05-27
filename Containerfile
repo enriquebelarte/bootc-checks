@@ -33,12 +33,12 @@ RUN echo "[vault]" > /etc/yum.repos.d/vault.repo \
     && echo "gpgcheck=0" >> /etc/yum.repos.d/vault.repo
 # Install habanalabs modules,firmware and libraries
 RUN if [ -f /etc/centos-release ]; then \
-       dnf makecache && dnf -y update \
+       dnf -y update \
        && dnf -y install epel-release \
        && crb enable \
        && dnf -y install ninja-build pandoc;\
     fi \
-    && dnf makecache && dnf -y update \
+    && dnf -y update \
     && dnf install -y dkms ninja-build pandoc \
     && dnf install -y habanalabs-firmware-${DRIVER_VERSION}.${REDHAT_VERSION} \
     habanalabs-${DRIVER_VERSION}.${REDHAT_VERSION} \
