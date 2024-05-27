@@ -10,8 +10,8 @@ ARG REDHAT_VERSION='el9'
 RUN . /etc/os-release \
     && export OS_VERSION_MAJOR="${OS_VERSION_MAJOR:-$(echo ${VERSION} | cut -d'.' -f 1)}" \
     && export TARGET_ARCH="${TARGET_ARCH:-$(arch)}" \
-    && export KERNEL_VERSION="${KERNEL_VERSION:-$(dnf info kernel | awk '/Version/ {v=$3} /Release/ {r=$3} END {print v"-"r}')}" \
-    && dnf -y update && dnf -y install kernel-headers-${KERNEL_VERSION} make git kmod
+    && export KERNEL_VERSION="${KERNEL_VERSION:-$(yum info kernel | awk '/Version/ {v=$3} /Release/ {r=$3} END {print v"-"r}')}" \
+    && yum -y update && yum -y install kernel-headers-${KERNEL_VERSION} make git kmod
  
 # Create the repository configuration file
 RUN echo "[vault]" > /etc/yum.repos.d/vault.repo \
