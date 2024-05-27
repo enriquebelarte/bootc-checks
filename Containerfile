@@ -44,8 +44,8 @@ RUN if [ -f /etc/centos-release ]; then \
     habanalabs-${DRIVER_VERSION}.${REDHAT_VERSION} \
     habanalabs-rdma-core-${DRIVER_VERSION}.${REDHAT_VERSION} \
     habanalabs-firmware-tools-${DRIVER_VERSION}.${REDHAT_VERSION} \
-    habanalabs-thunk-${DRIVER_VERSION}.${REDHAT_VERSION} \
-    && dnf clean all
+    habanalabs-thunk-${DRIVER_VERSION}.${REDHAT_VERSION}
+    
 RUN depmod -a ${KERNEL_VERSION} 
 
 # Include growfs service
