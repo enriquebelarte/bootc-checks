@@ -19,10 +19,7 @@ RUN mkdir -p /tmp/repos-tmp-dir && chown root:root /tmp/repos-tmp-dir && chmod 1
 RUN . /etc/os-release \
     && export OS_VERSION_MAJOR="${OS_VERSION_MAJOR:-$(echo ${VERSION} | cut -d'.' -f 1)}" \
     && export TARGET_ARCH="${TARGET_ARCH:-$(arch)}" \
-    && if [ "${KERNEL_VERSION}" == "" ]; then \
-        export KERNEL_VERSION="${KERNEL_VERSION:-$(dnf info kernel | awk '/Version/ {v=$3} /Release/ {r=$3} END {print v"-"r}')}" ;\
-       fi \ 
-    && yum -y update && yum -y install kernel-headers-${KERNEL_VERSION} make git kmod
+    && yum -y update && yum -y install kernel-headers${KERNEL_VERSION:+-}${KERNEL_VERSION} make git kmod
 
 RUN if [ -f /etc/centos-release ]; then \
        TMPDIR=/tmp/repos-tmp-dir yum -y update \
