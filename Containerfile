@@ -24,7 +24,7 @@ RUN . /etc/os-release \
 RUN if [ -f /etc/centos-release ]; then \
        TMPDIR=/tmp/repos-tmp-dir yum -y update \
        && TMPDIR=/tmp/repos-tmp-dir yum -y install epel-release \
-       && dnf install 'dnf-command(config-manager)' \
+       && dnf -y install 'dnf-command(config-manager)' \
        && crb enable ;\
     fi
 #RUN TMPDIR=/tmp/repos-tmp-dir yum -y install ninja-build pandoc
