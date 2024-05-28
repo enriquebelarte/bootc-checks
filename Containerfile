@@ -30,13 +30,14 @@ RUN if grep -q -i "centos" /etc/os-release; then \
 	dnf -y install epel-release epel-next-release ; \
     elif grep -q -i "red hat" /etc/os-release; then \
         echo "Red Hat detected" && \
+	export TMPDIR=/var/tmp && \
 	subscription-manager repos --enable codeready-builder-for-rhel-9-$(arch)-rpms && \
 	dnf -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm ;\
     else \
         echo "Unsupported OS" && exit 1; \
     fi
 
-RUN dnf -y install ninja-build pandoc
+RUN export TMPDIR=/var/tmp && dnf -y install ninja-build pandoc
 
 
 # Install habanalabs modules,firmware and libraries
