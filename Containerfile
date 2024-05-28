@@ -10,8 +10,8 @@ ARG KERNEL_VERSION=''
 ARG REDHAT_VERSION='el9'
 
 # Workaround? for dnf temp dir permission issue in bootc images
-RUN echo "cachedir=${HOME}/dnf-cache" >> /etc/dnf/dnf.conf \
-     && mkdir -p ${HOME}/dnf-cache && chown root:root ${HOME}/dnf-cache && chmod 755 ${HOME}dnf-cache
+RUN echo "cachedir=/var/tmp/dnf-cache" >> /etc/dnf/dnf.conf \
+     && mkdir -p /var/tmp/dnf-cache && chown root:root /var/tmp/dnf-cache && chmod 755 /var/tmp/dnf-cache
 
 RUN . /etc/os-release \
     && export OS_VERSION_MAJOR="${OS_VERSION_MAJOR:-$(echo ${VERSION} | cut -d'.' -f 1)}" \
