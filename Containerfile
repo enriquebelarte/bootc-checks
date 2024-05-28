@@ -16,7 +16,7 @@ RUN . /etc/os-release \
     && export TARGET_ARCH="${TARGET_ARCH:-$(arch)}" \
     && dnf -y update && dnf -y install kernel-headers${KERNEL_VERSION:+-}${KERNEL_VERSION} make git kmod
 
-COPY habana.repo /etc/yum.repos.d/vault.repo
+#COPY habana.repo /etc/yum.repos.d/vault.repo
 
 RUN if [ -f /etc/centos-release ]; then \
        yum -y update \
@@ -24,17 +24,17 @@ RUN if [ -f /etc/centos-release ]; then \
        && dnf config-manager --enable crb ;\
     fi
 
-RUN setenforce 0
+
 RUN dnf -y install ninja-build pandoc
 
 
 # Install habanalabs modules,firmware and libraries
-RUN dnf -y update \
-    && dnf -y install habanalabs-firmware-${DRIVER_VERSION}.${REDHAT_VERSION} \
-    habanalabs-${DRIVER_VERSION}.${REDHAT_VERSION} \
-    habanalabs-rdma-core-${DRIVER_VERSION}.${REDHAT_VERSION} \
-    habanalabs-firmware-tools-${DRIVER_VERSION}.${REDHAT_VERSION} \
-    habanalabs-thunk-${DRIVER_VERSION}.${REDHAT_VERSION}
+#RUN dnf -y update \
+#    && dnf -y install habanalabs-firmware-${DRIVER_VERSION}.${REDHAT_VERSION} \
+#    habanalabs-${DRIVER_VERSION}.${REDHAT_VERSION} \
+#    habanalabs-rdma-core-${DRIVER_VERSION}.${REDHAT_VERSION} \
+#    habanalabs-firmware-tools-${DRIVER_VERSION}.${REDHAT_VERSION} \
+#    habanalabs-thunk-${DRIVER_VERSION}.${REDHAT_VERSION}
     
 #RUN depmod -a ${KERNEL_VERSION} 
 
