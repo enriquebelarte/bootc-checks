@@ -37,7 +37,7 @@ RUN if grep -q -i "centos" /etc/os-release; then \
         echo "Unsupported OS" && exit 1; \
     fi
 
-RUN export TMPDIR=/var/tmp && TMPDIR=/var/tmp dnf -y install ninja-build pandoc
+RUN export TMPDIR=/var/tmp && TMPDIR=/var/tmp dnf --downloaddir=/var/tmp -y install ninja-build pandoc
 
 
 # Install habanalabs modules,firmware and libraries
