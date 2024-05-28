@@ -22,8 +22,8 @@ RUN . /etc/os-release \
     && yum -y update && yum -y install kernel-headers${KERNEL_VERSION:+-}${KERNEL_VERSION} make git kmod
 
 RUN if [ -f /etc/centos-release ]; then \
-       TMPDIR=/tmp/repos-tmp-dir yum -y update \
-       && TMPDIR=/tmp/repos-tmp-dir yum -y install epel-release \
+       yum -y update \
+       && yum -y install epel-release \
        && dnf -y install 'dnf-command(config-manager)' \
        && crb enable ;\
     fi
@@ -37,7 +37,7 @@ RUN echo "[vault]" > /etc/yum.repos.d/vault.repo \
     && echo "enabled=1" >> /etc/yum.repos.d/vault.repo \
     && echo "gpgcheck=0" >> /etc/yum.repos.d/vault.repo
 # Install habanalabs modules,firmware and libraries
-RUN setenforce 0 \
+RUN chcon -t container_file_t /tmp/libdnf.* \
     && yum -y update && yum -y install habanalabs-firmware-${DRIVER_VERSION}.${REDHAT_VERSION} \
     habanalabs-${DRIVER_VERSION}.${REDHAT_VERSION} \
     habanalabs-rdma-core-${DRIVER_VERSION}.${REDHAT_VERSION} \
