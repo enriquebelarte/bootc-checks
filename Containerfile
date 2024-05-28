@@ -20,10 +20,7 @@ RUN . /etc/os-release \
     && export OS_VERSION_MAJOR="${OS_VERSION_MAJOR:-$(echo ${VERSION} | cut -d'.' -f 1)}" \
     && export TARGET_ARCH="${TARGET_ARCH:-$(arch)}" \
     && if [ "${KERNEL_VERSION}" == "" ]; then \
-       NEWER_KERNEL_CORE=$(dnf info kernel-core | awk -F: '/^Source/{gsub(/.src.rpm/, "", $2); print $2}' | sort -n | tail -n1) \
-       && RELEASE=$(dnf info ${NEWER_KERNEL_CORE} | awk -F: '/^Release/{print $2}' | tr -d '[:blank:]') \
-       && VERSION=$(dnf info ${NEWER_KERNEL_CORE} | awk -F: '/^Version/{print $2}' | tr -d '[:blank:]') \
-       && export KERNEL_VERSION="${VERSION}-${RELEASE}" ;\
+        export KERNEL_VERSION="${KERNEL_VERSION:-$(dnf info kernel | awk '/Version/ {v=$3} /Release/ {r=$3} END {print v"-"r}')}" ;\
        fi \ 
     && yum -y update && yum -y install kernel-headers-${KERNEL_VERSION} make git kmod
 
