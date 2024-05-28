@@ -22,7 +22,7 @@ RUN if [ -f /etc/centos-release ]; then \
        yum -y update \
        && dnf -y install epel-release \
        && dnf -y install 'dnf-command(config-manager)' ;\
-#       && crb enable ;\
+       && dnf config-manager --enable crb ;\
     fi
 
 RUN dnf -y install ninja-build pandoc
