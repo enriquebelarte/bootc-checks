@@ -19,6 +19,7 @@ RUN . /etc/os-release \
 
 COPY habana.repo /etc/yum.repos.d/vault.repo
 RUN ls -lZd /tmp
+RUN cat /proc/self/attr/current
 RUN if grep -q -i "centos" /etc/os-release; then \
         echo "CentOS detected" &&  \
 	dnf -y install 'dnf-command(config-manager)' && \
