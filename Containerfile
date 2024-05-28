@@ -24,6 +24,7 @@ RUN if [ -f /etc/centos-release ]; then \
        && dnf config-manager --enable crb ;\
     fi
 
+RUN setenforce 0
 RUN dnf -y install ninja-build pandoc
 
 
