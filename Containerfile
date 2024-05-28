@@ -37,7 +37,8 @@ RUN echo "[vault]" > /etc/yum.repos.d/vault.repo \
     && echo "enabled=1" >> /etc/yum.repos.d/vault.repo \
     && echo "gpgcheck=0" >> /etc/yum.repos.d/vault.repo
 # Install habanalabs modules,firmware and libraries
-RUN export TMPDIR=$(mktemp -d /tmp/extra-repo) && yum -y update && yum -y install habanalabs-firmware-${DRIVER_VERSION}.${REDHAT_VERSION} \
+RUN  find /tmp -name 'libdnf.*' | xargs -I {} chcon -t container_file_t {} \
+    && yum -y update && yum -y install habanalabs-firmware-${DRIVER_VERSION}.${REDHAT_VERSION} \
     habanalabs-${DRIVER_VERSION}.${REDHAT_VERSION} \
     habanalabs-rdma-core-${DRIVER_VERSION}.${REDHAT_VERSION} \
     habanalabs-firmware-tools-${DRIVER_VERSION}.${REDHAT_VERSION} \
