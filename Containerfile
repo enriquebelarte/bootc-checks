@@ -9,8 +9,8 @@ ARG TARGET_ARCH=''
 ARG KERNEL_VERSION=''
 ARG REDHAT_VERSION='el9'
 # Workaround? for dnf temp dir permission issue in bootc images
-#RUN echo "cachedir=/tmp/dnf-cache" >> /etc/dnf/dnf.conf \
-#    && mkdir -p /tmp/dnf-cache && chown root:root /tmp/dnf-cache && chmod 755 /tmp/dnf-cache
+RUN echo "cachedir=/tmp/dnf-cache" >> /etc/dnf/dnf.conf \
+    && mkdir -p /tmp/dnf-cache && chown root:root /tmp/dnf-cache && chmod 755 /tmp/dnf-cache
 
 RUN . /etc/os-release \
     && export OS_VERSION_MAJOR="${OS_VERSION_MAJOR:-$(echo ${VERSION} | cut -d'.' -f 1)}" \
