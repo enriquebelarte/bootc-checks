@@ -10,36 +10,27 @@ ARG REDHAT_VERSION='el9'
 # Workaround? for dnf temp dir permission issue in bootc images
 RUN echo "cachedir=/tmp/dnf-cache" >> /etc/dnf/dnf.conf \
     && mkdir -p /tmp/dnf-cache && chown root:root /tmp/dnf-cache && chmod 755 /tmp/dnf-cache
-RUN mkdir -p /tmp/repos-tmp-dir && chown root:root /tmp/repos-tmp-dir && chmod 1777 /tmp/repos-tmp-dir
-
-
-
-
 
 RUN . /etc/os-release \
     && export OS_VERSION_MAJOR="${OS_VERSION_MAJOR:-$(echo ${VERSION} | cut -d'.' -f 1)}" \
     && export TARGET_ARCH="${TARGET_ARCH:-$(arch)}" \
-    && yum -y update && yum -y install kernel-headers${KERNEL_VERSION:+-}${KERNEL_VERSION} make git kmod
+    && dnf -y update && dnf -y install kernel-headers${KERNEL_VERSION:+-}${KERNEL_VERSION} make git kmod
+
+COPY habana.repo /etc/yum.repos.d/vault.repo
 
 RUN if [ -f /etc/centos-release ]; then \
        yum -y update \
-       && yum -y install epel-release \
+       && dnf -y install epel-release \
        && dnf -y install 'dnf-command(config-manager)' \
        && crb enable ;\
     fi
-#RUN TMPDIR=/tmp/repos-tmp-dir yum -y install ninja-build pandoc
+
+RUN dnf -y install ninja-build pandoc
 
 
-# Create the repository configuration file
-RUN echo "[vault]" > /etc/yum.repos.d/vault.repo \
-    && echo "name=Habana Vault" >> /etc/yum.repos.d/vault.repo \
-    && echo "baseurl=https://vault.habana.ai/artifactory/rhel/9/9.2" >> /etc/yum.repos.d/vault.repo \
-    && echo "enabled=1" >> /etc/yum.repos.d/vault.repo \
-    && echo "gpgcheck=0" >> /etc/yum.repos.d/vault.repo
 # Install habanalabs modules,firmware and libraries
-RUN yum -y update \
-    && chcon -t container_file_t /tmp/libdnf.* \
-    && yum -y install habanalabs-firmware-${DRIVER_VERSION}.${REDHAT_VERSION} \
+RUN dnf -y update \
+    && dnf -y install habanalabs-firmware-${DRIVER_VERSION}.${REDHAT_VERSION} \
     habanalabs-${DRIVER_VERSION}.${REDHAT_VERSION} \
     habanalabs-rdma-core-${DRIVER_VERSION}.${REDHAT_VERSION} \
     habanalabs-firmware-tools-${DRIVER_VERSION}.${REDHAT_VERSION} \

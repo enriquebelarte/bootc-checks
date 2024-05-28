@@ -1,0 +1,5 @@
+[vault]
+name=Habana Vault
+baseurl=https://vault.habana.ai/artifactory/rhel/9/9.2
+enabled=1
+gpgcheck=0
