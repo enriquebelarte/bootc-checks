@@ -1,4 +1,5 @@
-ARG BASEIMAGE="quay.io/centos-bootc/centos-bootc:stream9"
+ARG BASEIMAGE="registry.redhat.io/rhel9/rhel-bootc:9.4"
+#ARG BASEIMAGE="quay.io/centos-bootc/centos-bootc:stream9"
 #ARG BASEIMAGE="quay.io/centos/centos:stream9"
 FROM ${BASEIMAGE}
 
@@ -18,11 +19,9 @@ RUN . /etc/os-release \
 
 #COPY habana.repo /etc/yum.repos.d/vault.repo
 
-RUN if [ -f /etc/centos-release ]; then \
-       yum -y update \
-       && dnf -y install epel-release 'dnf-command(config-manager)' \
-       && dnf config-manager --enable crb ;\
-    fi
+RUN yum -y update \
+    && dnf -y install epel-release 'dnf-command(config-manager)' \
+    && dnf config-manager --enable crb 
 
 
 RUN dnf -y install ninja-build pandoc
