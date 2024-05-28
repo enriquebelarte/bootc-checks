@@ -18,7 +18,7 @@ RUN . /etc/os-release \
     && dnf -y update && dnf -y install kernel-headers${KERNEL_VERSION:+-}${KERNEL_VERSION} make git kmod
 
 COPY habana.repo /etc/yum.repos.d/vault.repo
-RUN ls -lZ /tmp
+RUN ls -lZd /tmp
 RUN if grep -q -i "centos" /etc/os-release; then \
         echo "CentOS detected" &&  \
 	dnf -y install 'dnf-command(config-manager)' && \
