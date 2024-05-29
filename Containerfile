@@ -20,8 +20,8 @@ RUN . /etc/os-release \
        kernel-devel${KERNEL_VERSION:+-}${KERNEL_VERSION} elfutils-libelf-devel gcc make git kmod \
        vim-filesystem 
 
-COPY habana.repo /etc/yum.repos.d/
-RUN yum -y update
+#COPY habana.repo /etc/yum.repos.d/
+#RUN yum -y update
 
 # EPEL and CRB packages (without libdnf)
 RUN rpm -ivh https://dl.fedoraproject.org/pub/epel/9/Everything/x86_64/Packages/p/pandoc-common-2.14.0.3-17.el9.noarch.rpm \
