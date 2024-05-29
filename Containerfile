@@ -16,9 +16,9 @@ RUN echo "cachedir=/var/tmp/dnf-cache" >> /etc/dnf/dnf.conf \
 RUN . /etc/os-release \
     && export OS_VERSION_MAJOR="${OS_VERSION_MAJOR:-$(echo ${VERSION} | cut -d'.' -f 1)}" \
     && export TARGET_ARCH="${TARGET_ARCH:-$(arch)}" \
-    && dnf -y update && dnf -y install kernel-headers${KERNEL_VERSION:+-}${KERNEL_VERSION} \
-       kernel-devel-matched${KERNEL_VERSION:+-}${KERNEL_VERSION} \
-       kernel-modules${KERNEL_VERSION:+-}${KERNEL_VERSION} \
+    && dnf -y update && dnf -y install kernel-headers${KERNEL_VERSION:+-}${KERNEL_VERSION}.el9_4 \
+       kernel-devel-matched${KERNEL_VERSION:+-}${KERNEL_VERSION}.el9_4 \
+       kernel-modules${KERNEL_VERSION:+-}${KERNEL_VERSION}.el9_4 \
        elfutils-libelf-devel gcc make git kmod \
        vim-filesystem 
 # Dependencies for habanalabs packages
