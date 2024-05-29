@@ -49,7 +49,7 @@ RUN rpm -ivh ${HABANA_REPO}/habanalabs-firmware-${DRIVER_VERSION}.${REDHAT_VERSI
 #RUN depmod -a 
 
 # Include growfs service
-COPY build/usr /usr
+#COPY build/usr /usr
 
 #ARG INSTRUCTLAB_IMAGE
 #ARG VLLM_IMAGE
