@@ -19,39 +19,22 @@ RUN . /etc/os-release \
     && dnf -y update && dnf -y install kernel-headers${KERNEL_VERSION:+-}${KERNEL_VERSION} make git kmod
 
 COPY habana.repo /etc/yum.repos.d/vault.repo
-RUN id -u 
-RUN cat /proc/self/attr/current
-RUN touch /tmp/libdnf.mytest
-RUN ls -lZ /tmp/libdnf.mytest
-RUN if grep -q -i "centos" /etc/os-release; then \
-        echo "CentOS detected" &&  \
-	dnf -y install 'dnf-command(config-manager)' && \
-	dnf -y config-manager --set-enabled crb && \
-	dnf -y install epel-release epel-next-release ; \
-    elif grep -q -i "red hat" /etc/os-release; then \
-        echo "Red Hat detected" && \
-	export TMPDIR=/var/tmp && \
-	subscription-manager repos --enable codeready-builder-for-rhel-9-$(arch)-rpms && \
-	dnf -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm ;\
-    else \
-        echo "Unsupported OS" && exit 1; \
-    fi
 
-RUN export TMPDIR=/var/tmp && TMPDIR=/var/tmp dnf --downloaddir=/var/tmp -y install ninja-build pandoc
+RUN rpm -ivh https://dl.fedoraproject.org/pub/epel/9/Everything/x86_64/Packages/p/pandoc-2.14.0.3-17.el9.x86_64.rpm && \
+    rpm -ivh https://mirror.stream.centos.org/9-stream/CRB/x86_64/os/Packages/ninja-build-1.10.2-6.el9.x86_64.rpm
 
 
 # Install habanalabs modules,firmware and libraries
-#RUN dnf -y update \
-#    && dnf -y install habanalabs-firmware-${DRIVER_VERSION}.${REDHAT_VERSION} \
-#    habanalabs-${DRIVER_VERSION}.${REDHAT_VERSION} \
-#    habanalabs-rdma-core-${DRIVER_VERSION}.${REDHAT_VERSION} \
-#    habanalabs-firmware-tools-${DRIVER_VERSION}.${REDHAT_VERSION} \
-#    habanalabs-thunk-${DRIVER_VERSION}.${REDHAT_VERSION}
+RUN dnf -y install habanalabs-firmware-${DRIVER_VERSION}.${REDHAT_VERSION} \
+    habanalabs-${DRIVER_VERSION}.${REDHAT_VERSION} \
+    habanalabs-rdma-core-${DRIVER_VERSION}.${REDHAT_VERSION} \
+    habanalabs-firmware-tools-${DRIVER_VERSION}.${REDHAT_VERSION} \
+    habanalabs-thunk-${DRIVER_VERSION}.${REDHAT_VERSION}
     
-#RUN depmod -a ${KERNEL_VERSION} 
+RUN depmod -a ${KERNEL_VERSION} 
 
 # Include growfs service
-#COPY build/usr /usr
+COPY build/usr /usr
 
 #ARG INSTRUCTLAB_IMAGE
 #ARG VLLM_IMAGE
