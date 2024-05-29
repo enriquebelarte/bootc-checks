@@ -8,7 +8,7 @@ ARG DRIVER_VERSION=1.15.1-15
 ARG TARGET_ARCH=''
 ARG KERNEL_VERSION=''
 ARG REDHAT_VERSION='el9'
-ENV TMPDIR=/var/tmp
+ARG HABANA_REPO="https://vault.habana.ai/artifactory/rhel/9/9.2"
 # Workaround? for dnf temp dir permission issue in bootc images
 RUN echo "cachedir=/var/tmp/dnf-cache" >> /etc/dnf/dnf.conf \
      && mkdir -p /var/tmp/dnf-cache && chown root:root /var/tmp/dnf-cache && chmod 755 /var/tmp/dnf-cache
@@ -16,7 +16,8 @@ RUN echo "cachedir=/var/tmp/dnf-cache" >> /etc/dnf/dnf.conf \
 RUN . /etc/os-release \
     && export OS_VERSION_MAJOR="${OS_VERSION_MAJOR:-$(echo ${VERSION} | cut -d'.' -f 1)}" \
     && export TARGET_ARCH="${TARGET_ARCH:-$(arch)}" \
-    && dnf -y update && dnf -y install kernel-headers${KERNEL_VERSION:+-}${KERNEL_VERSION} make git kmod vim-filesystem
+    && dnf -y update && dnf -y install kernel-headers${KERNEL_VERSION:+-}${KERNEL_VERSION} make git kmod \
+       vim-filesystem dkms
 
 COPY habana.repo /etc/yum.repos.d/
 RUN yum -y update
@@ -25,13 +26,19 @@ RUN rpm -ivh https://dl.fedoraproject.org/pub/epel/9/Everything/x86_64/Packages/
     https://dl.fedoraproject.org/pub/epel/9/Everything/x86_64/Packages/p/pandoc-2.14.0.3-17.el9.x86_64.rpm \
     https://mirror.stream.centos.org/9-stream/CRB/x86_64/os/Packages/ninja-build-1.10.2-6.el9.x86_64.rpm
 
+# Install packages without using libdnf
+RUN rpm -ivh ${HABANA_REPO}/habanalabs-firmware-${DRIVER_VERSION}.${REDHAT_VERSION}.$(arch).rpm \
+	    ${HABANA_REPO}/habanalabs-${DRIVER_VERSION}.${REDHAT_VERSION}.noarch.rpm \
+	    ${HABANA_REPO}/habanalabs-rdma-core-${DRIVER_VERSION}.${REDHAT_VERSION}.noarch.rpm \
+	    ${HABANA_REPO}/habanalabs-firmware-tools-${DRIVER_VERSION}.${REDHAT_VERSION}.$(arch).rpm \
+	    ${HABANA_REPO}/habanalabs-thunk-${DRIVER_VERSION}.${REDHAT_VERSION}.$(arch).rpm
 
 # Install habanalabs modules,firmware and libraries
-RUN dnf -y install habanalabs-firmware-${DRIVER_VERSION}.${REDHAT_VERSION} \
-    habanalabs-${DRIVER_VERSION}.${REDHAT_VERSION} \
-    habanalabs-rdma-core-${DRIVER_VERSION}.${REDHAT_VERSION} \
-    habanalabs-firmware-tools-${DRIVER_VERSION}.${REDHAT_VERSION} \
-    habanalabs-thunk-${DRIVER_VERSION}.${REDHAT_VERSION}
+#RUN dnf -y install habanalabs-firmware-${DRIVER_VERSION}.${REDHAT_VERSION} \
+#    habanalabs-${DRIVER_VERSION}.${REDHAT_VERSION} \
+#    habanalabs-rdma-core-${DRIVER_VERSION}.${REDHAT_VERSION} \
+#    habanalabs-firmware-tools-${DRIVER_VERSION}.${REDHAT_VERSION} \
+#    habanalabs-thunk-${DRIVER_VERSION}.${REDHAT_VERSION}
     
 RUN depmod -a ${KERNEL_VERSION} 
 
