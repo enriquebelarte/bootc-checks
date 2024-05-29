@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# Set the default kernel version
+DEFAULT_KERNEL_VERSION="5.10.0-1.el9.x86_64"
+
+# Check if a kernel version is already specified in the arguments
+KERNEL_SPECIFIED=false
+for arg in "$@"; do
+  if [[ $arg == -k ]] || [[ $arg == --kernelver* ]]; then
+    KERNEL_SPECIFIED=true
+    break
+  fi
+done
+
+# Add the default kernel version if not specified
+if ! $KERNEL_SPECIFIED; then
+  set -- "$@" -k "$DEFAULT_KERNEL_VERSION"
+fi
+
+# Call the actual dkms command with the modified arguments
+/usr/sbin/dkms "$@"

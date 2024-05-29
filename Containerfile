@@ -6,7 +6,7 @@ FROM ${BASEIMAGE}
 ARG OS_VERSION_MAJOR=''
 ARG DRIVER_VERSION=1.15.1-15
 ARG TARGET_ARCH=''
-ARG KERNEL_VERSION=''
+ARG KERNEL_VERSION='5.14.0-427.18.1'
 ARG REDHAT_VERSION='el9'
 ARG HABANA_REPO="https://vault.habana.ai/artifactory/rhel/9/9.2"
 # Workaround? for dnf temp dir permission issue in bootc images
@@ -46,7 +46,7 @@ RUN rpm -ivh ${HABANA_REPO}/habanalabs-firmware-${DRIVER_VERSION}.${REDHAT_VERSI
 #    habanalabs-firmware-tools-${DRIVER_VERSION}.${REDHAT_VERSION} \
 #    habanalabs-thunk-${DRIVER_VERSION}.${REDHAT_VERSION}
     
-#RUN depmod -a 
+RUN depmod -a 
 
 # Include growfs service
 #COPY build/usr /usr
