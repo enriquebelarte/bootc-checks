@@ -17,7 +17,9 @@ RUN . /etc/os-release \
     && export OS_VERSION_MAJOR="${OS_VERSION_MAJOR:-$(echo ${VERSION} | cut -d'.' -f 1)}" \
     && export TARGET_ARCH="${TARGET_ARCH:-$(arch)}" \
     && dnf -y update && dnf -y install kernel-headers${KERNEL_VERSION:+-}${KERNEL_VERSION} \
-       kernel-devel-matched${KERNEL_VERSION:+-}${KERNEL_VERSION} elfutils-libelf-devel gcc make git kmod \
+       kernel-devel-matched${KERNEL_VERSION:+-}${KERNEL_VERSION} \
+       kernel-modules${KERNEL_VERSION:+-}${KERNEL_VERSION} \
+       elfutils-libelf-devel gcc make git kmod \
        vim-filesystem 
 # Dependencies for habanalabs packages
 RUN dnf -y install cmake libnl3-devel valgrind-devel pciutils systemd-devel
