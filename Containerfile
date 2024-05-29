@@ -17,7 +17,7 @@ RUN . /etc/os-release \
     && export OS_VERSION_MAJOR="${OS_VERSION_MAJOR:-$(echo ${VERSION} | cut -d'.' -f 1)}" \
     && export TARGET_ARCH="${TARGET_ARCH:-$(arch)}" \
     && dnf -y update && dnf -y install kernel-headers${KERNEL_VERSION:+-}${KERNEL_VERSION} \
-       kernel-devel${KERNEL_VERSION:+-}${KERNEL_VERSION} elfutils-libelf-devel fcc make git kmod \
+       kernel-devel${KERNEL_VERSION:+-}${KERNEL_VERSION} elfutils-libelf-devel gcc make git kmod \
        vim-filesystem 
 
 COPY habana.repo /etc/yum.repos.d/
