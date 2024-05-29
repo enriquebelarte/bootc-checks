@@ -18,7 +18,8 @@ RUN . /etc/os-release \
     && export TARGET_ARCH="${TARGET_ARCH:-$(arch)}" \
     && dnf -y update && dnf -y install kernel-headers${KERNEL_VERSION:+-}${KERNEL_VERSION} make git kmod vim-filesystem
 
-COPY habana.repo /etc/yum.repos.d/vault.repo
+COPY habana.repo /etc/yum.repos.d/
+RUN yum -y update
 
 RUN rpm -ivh https://dl.fedoraproject.org/pub/epel/9/Everything/x86_64/Packages/p/pandoc-common-2.14.0.3-17.el9.noarch.rpm \
     https://dl.fedoraproject.org/pub/epel/9/Everything/x86_64/Packages/p/pandoc-2.14.0.3-17.el9.x86_64.rpm \
