@@ -19,7 +19,8 @@ RUN . /etc/os-release \
     && dnf -y update && dnf -y install kernel-headers${KERNEL_VERSION:+-}${KERNEL_VERSION} \
        kernel-devel-matched${KERNEL_VERSION:+-}${KERNEL_VERSION} elfutils-libelf-devel gcc make git kmod \
        vim-filesystem 
-
+# Dependencies for habanalabs packages
+RUN dnf -y install cmake libnl3-devel valgrind-devel pciutils systemd-devel
 #COPY habana.repo /etc/yum.repos.d/
 #RUN yum -y update
 
