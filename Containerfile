@@ -46,7 +46,7 @@ RUN rpm -ivh ${HABANA_REPO}/habanalabs-firmware-${DRIVER_VERSION}.${REDHAT_VERSI
 #    habanalabs-firmware-tools-${DRIVER_VERSION}.${REDHAT_VERSION} \
 #    habanalabs-thunk-${DRIVER_VERSION}.${REDHAT_VERSION}
     
-RUN depmod -a ${KERNEL_VERSION} 
+#RUN depmod -a 
 
 # Include growfs service
 COPY build/usr /usr
