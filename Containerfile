@@ -8,7 +8,7 @@ ARG DRIVER_VERSION=1.15.1-15
 ARG TARGET_ARCH=''
 ARG KERNEL_VERSION=''
 ARG REDHAT_VERSION='el9'
-
+ENV TMPDIR=/var/tmp
 # Workaround? for dnf temp dir permission issue in bootc images
 RUN echo "cachedir=/var/tmp/dnf-cache" >> /etc/dnf/dnf.conf \
      && mkdir -p /var/tmp/dnf-cache && chown root:root /var/tmp/dnf-cache && chmod 755 /var/tmp/dnf-cache
