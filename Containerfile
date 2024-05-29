@@ -31,6 +31,8 @@ RUN rpm -ivh https://dl.fedoraproject.org/pub/epel/9/Everything/x86_64/Packages/
     https://dl.fedoraproject.org/pub/epel/9/Everything/x86_64/Packages/p/pandoc-2.14.0.3-17.el9.x86_64.rpm \
     https://mirror.stream.centos.org/9-stream/CRB/x86_64/os/Packages/ninja-build-1.10.2-6.el9.x86_64.rpm \
     https://dl.fedoraproject.org/pub/epel/9/Everything/x86_64/Packages/d/dkms-3.0.13-1.el9.noarch.rpm
+COPY dkms /usr/local/bin/dkms
+RUN sed -i "s/CUSTOM_VERSION/${KERNEL_VERSION}.el9_4.x86_64/g" /usr/local/bin/dkms
 
 # Install packages without using libdnf
 RUN rpm -ivh ${HABANA_REPO}/habanalabs-firmware-${DRIVER_VERSION}.${REDHAT_VERSION}.$(arch).rpm \

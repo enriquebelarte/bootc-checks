@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Set the default kernel version
-DEFAULT_KERNEL_VERSION="5.10.0-1.el9.x86_64"
+DEFAULT_KERNEL_VERSION="CUSTOM_VERSION"
 
 # Check if a kernel version is already specified in the arguments
 KERNEL_SPECIFIED=false
