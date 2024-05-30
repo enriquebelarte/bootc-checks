@@ -55,8 +55,8 @@ RUN rpm -ivh ${HABANA_REPO}/habanalabs-firmware-${DRIVER_VERSION}.${REDHAT_VERSI
 	    #${HABANA_REPO}/habanalabs-${DRIVER_VERSION}.${REDHAT_VERSION}.noarch.rpm \
              /var/tmp/x86_64/habanalabs-1.15.1-15.el9.x86_64.rpm \
 	    ${HABANA_REPO}/habanalabs-rdma-core-${DRIVER_VERSION}.${REDHAT_VERSION}.noarch.rpm \
+            ${HABANA_REPO}/habanalabs-thunk-${DRIVER_VERSION}.${REDHAT_VERSION}.$(arch).rpm \
 	    ${HABANA_REPO}/habanalabs-firmware-tools-${DRIVER_VERSION}.${REDHAT_VERSION}.$(arch).rpm 
-	    ${HABANA_REPO}/habanalabs-thunk-${DRIVER_VERSION}.${REDHAT_VERSION}.$(arch).rpm
 
 # Install habanalabs modules,firmware and libraries
 #RUN dnf -y install habanalabs-firmware-${DRIVER_VERSION}.${REDHAT_VERSION} \
