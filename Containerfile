@@ -40,7 +40,7 @@ RUN curl -L -o habanalabs-${DRIVER_VERSION}.${REDHAT_VERSION}.noarch.rpm https:/
 
 # Modify rpm spec for builds on different kernel versions other than build host
 RUN rpm -ivh https://kojipkgs.fedoraproject.org//packages/rpmrebuild/2.16/3.el9/noarch/rpmrebuild-2.16-3.el9.noarch.rpm
-RUN RPMREBUILD_TMPDIR=/var/tmp/rpmrebuild rpmrebuild --change-spec-preamble='sed "s/BuildArch:     noarch/BuildArch:     x86_64/g"'  --change-spec-post="sed 's|^/usr/sbin/dkms add|KERNEL_DIR=${KERNEL_HEADERS_PATH} &|'" --change-spec-post="sed 's|^/usr/sbin/dkms build|KERNEL_DIR=${KERNEL_HEADERS_PATH} &|'" --package /var/tmp/habanalabs-1.15.1-15.el9.noarch.rpm --directory=/var/tmp/
+RUN RPMREBUILD_TMPDIR=/var/tmp/rpmrebuild rpmrebuild --directory=/var/tmp/ --change-spec-preamble='sed "s/BuildArch:     noarch/BuildArch:     x86_64/g"'  --change-spec-post="sed 's|^/usr/sbin/dkms add|KERNEL_DIR=${KERNEL_HEADERS_PATH} &|'" --change-spec-post="sed 's|^/usr/sbin/dkms build|KERNEL_DIR=${KERNEL_HEADERS_PATH} &|'" --package /var/tmp/habanalabs-1.15.1-15.el9.noarch.rpm 
 
 
 # Install packages without using libdnf
