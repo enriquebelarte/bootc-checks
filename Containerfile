@@ -42,7 +42,7 @@ RUN curl -L -o habanalabs-${DRIVER_VERSION}.${REDHAT_VERSION}.noarch.rpm https:/
 RUN rpm -ivh https://kojipkgs.fedoraproject.org//packages/rpmrebuild/2.16/3.el9/noarch/rpmrebuild-2.16-3.el9.noarch.rpm
 RUN RPMREBUILD_TMPDIR=/var/tmp/rpmrebuild rpmrebuild --directory=/var/tmp/ \
     --change-spec-preamble='sed "s/BuildArch:     noarch/BuildArch:     x86_64/g"'  \
-    --change-spec-preamble="sed 's|Name: habanalabs/a BuildRoot: /var/tmp'" \
+    --change-spec-preamble="sed 's|Name: habanalabs|a BuildRoot: /var/tmp|g'" \
     --change-spec-post="sed 's|^/usr/sbin/dkms add|KERNEL_DIR=${KERNEL_HEADERS_PATH} &|'" \
     --change-spec-post="sed 's|^/usr/sbin/dkms build|KERNEL_DIR=${KERNEL_HEADERS_PATH} &|'" \
     --package /var/tmp/habanalabs-1.15.1-15.el9.noarch.rpm 
