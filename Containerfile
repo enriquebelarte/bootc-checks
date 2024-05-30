@@ -10,6 +10,7 @@ ARG KERNEL_VERSION='5.14.0-427.18.1'
 ARG REDHAT_VERSION='el9'
 ARG HABANA_REPO="https://vault.habana.ai/artifactory/rhel/9/9.2"
 ARG KERNEL_HEADERS_PATH="/usr/lib/modules/${KERNEL_VERSION}.el9_4.x86_64/build"
+
 # Workaround? for dnf temp dir permission issue in bootc images
 RUN echo "cachedir=/var/tmp/dnf-cache" >> /etc/dnf/dnf.conf \
      && mkdir -p /var/tmp/dnf-cache && chown root:root /var/tmp/dnf-cache && chmod 755 /var/tmp/dnf-cache
@@ -39,13 +40,13 @@ RUN curl -o habanalabs-${DRIVER_VERSION}.${REDHAT_VERSION}.noarch.rpm ${HABANA_R
 
 # Modify rpm spec for builds on different kernel versions other than build host
 RUN rpm -ivh https://kojipkgs.fedoraproject.org//packages/rpmrebuild/2.16/3.el9/noarch/rpmrebuild-2.16-3.el9.noarch.rpm
-RUN rpmrebuild --change-spec-preamble='sed "s/BuildArch:     noarch/BuildArch:     x86_64/g"'  --change-spec-post="sed 's|^/usr/sbin/dkms add|KERNEL_DIR=${KERNEL_HEADERS_PATH} &|'" --change-spec-post="sed 's|^/usr/sbin/dkms build|KERNEL_DIR=${KERNEL_HEADERS_PATH} &|'" --package habanalabs-1.15.1-15.el9.noarch.rpm
+RUN RPMREBUILD_TMPDIR=/var/tmp/rpmrebuild rpmrebuild --change-spec-preamble='sed "s/BuildArch:     noarch/BuildArch:     x86_64/g"'  --change-spec-post="sed 's|^/usr/sbin/dkms add|KERNEL_DIR=${KERNEL_HEADERS_PATH} &|'" --change-spec-post="sed 's|^/usr/sbin/dkms build|KERNEL_DIR=${KERNEL_HEADERS_PATH} &|'" --package habanalabs-1.15.1-15.el9.noarch.rpm
 
 
 # Install packages without using libdnf
 RUN rpm -ivh ${HABANA_REPO}/habanalabs-firmware-${DRIVER_VERSION}.${REDHAT_VERSION}.$(arch).rpm \
 	    #${HABANA_REPO}/habanalabs-${DRIVER_VERSION}.${REDHAT_VERSION}.noarch.rpm \
-             /root/rpmbuild/RPMS/x86_64/habanalabs-1.15.1-15.el9.x86_64.rpm \
+             /var/tmp/rpmrebuild/rebuild/rpmbuild/RPMS/x86_64/habanalabs-1.15.1-15.el9.x86_64.rpm \
 	    ${HABANA_REPO}/habanalabs-rdma-core-${DRIVER_VERSION}.${REDHAT_VERSION}.noarch.rpm \
 	    ${HABANA_REPO}/habanalabs-firmware-tools-${DRIVER_VERSION}.${REDHAT_VERSION}.$(arch).rpm 
 	    ${HABANA_REPO}/habanalabs-thunk-${DRIVER_VERSION}.${REDHAT_VERSION}.$(arch).rpm
