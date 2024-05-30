@@ -9,6 +9,7 @@ ARG TARGET_ARCH=''
 ARG KERNEL_VERSION='5.14.0-427.18.1'
 ARG REDHAT_VERSION='el9'
 ARG HABANA_REPO="https://vault.habana.ai/artifactory/rhel/9/9.2"
+ARG KERNEL_HEADERS_PATH="/usr/lib/modules/${KERNEL_VERSION}.el9_4.x86_64/build"
 # Workaround? for dnf temp dir permission issue in bootc images
 RUN echo "cachedir=/var/tmp/dnf-cache" >> /etc/dnf/dnf.conf \
      && mkdir -p /var/tmp/dnf-cache && chown root:root /var/tmp/dnf-cache && chmod 755 /var/tmp/dnf-cache
@@ -20,7 +21,7 @@ RUN . /etc/os-release \
        kernel-devel-matched${KERNEL_VERSION:+-}${KERNEL_VERSION}.el9_4 \
        kernel-modules${KERNEL_VERSION:+-}${KERNEL_VERSION}.el9_4 \
        elfutils-libelf-devel gcc make git kmod \
-       vim-filesystem 
+       vim-filesystem rpmrebuild
 # Dependencies for habanalabs packages
 RUN dnf -y install cmake libnl3-devel valgrind-devel pciutils systemd-devel
 #COPY habana.repo /etc/yum.repos.d/
@@ -31,14 +32,21 @@ RUN rpm -ivh https://dl.fedoraproject.org/pub/epel/9/Everything/x86_64/Packages/
     https://dl.fedoraproject.org/pub/epel/9/Everything/x86_64/Packages/p/pandoc-2.14.0.3-17.el9.x86_64.rpm \
     https://mirror.stream.centos.org/9-stream/CRB/x86_64/os/Packages/ninja-build-1.10.2-6.el9.x86_64.rpm \
     https://dl.fedoraproject.org/pub/epel/9/Everything/x86_64/Packages/d/dkms-3.0.13-1.el9.noarch.rpm
-COPY dkms /usr/local/bin/dkms
-RUN sed -i "s/CUSTOM_VERSION/${KERNEL_VERSION}.el9_4.x86_64/g" /usr/local/bin/dkms
+
+# Download main habanalabs package
+WORKDIR /var/tmp
+RUN curl -o habanalabs-${DRIVER_VERSION}.${REDHAT_VERSION}.noarch.rpm ${HABANA_REPO}/habanalabs-${DRIVER_VERSION}.${REDHAT_VERSION}.noarch.rpm
+
+# Modify rpm spec for builds on different kernel versions other than build host
+RUN rpmrebuild --change-spec-preamble='sed "s/BuildArch:     noarch/BuildArch:     x86_64/g"'  --change-spec-post="sed 's|^/usr/sbin/dkms add|KERNEL_DIR=${KERNEL_HEADERS_PATH} &|'" --change-spec-post="sed 's|^/usr/sbin/dkms build|KERNEL_DIR=${KERNEL_HEADERS_PATH} &|'" --package habanalabs-1.15.1-15.el9.noarch.rpm
+
 
 # Install packages without using libdnf
 RUN rpm -ivh ${HABANA_REPO}/habanalabs-firmware-${DRIVER_VERSION}.${REDHAT_VERSION}.$(arch).rpm \
-	    ${HABANA_REPO}/habanalabs-${DRIVER_VERSION}.${REDHAT_VERSION}.noarch.rpm \
+	    #${HABANA_REPO}/habanalabs-${DRIVER_VERSION}.${REDHAT_VERSION}.noarch.rpm \
+             /root/rpmbuild/RPMS/x86_64/habanalabs-1.15.1-15.el9.x86_64.rpm \
 	    ${HABANA_REPO}/habanalabs-rdma-core-${DRIVER_VERSION}.${REDHAT_VERSION}.noarch.rpm \
-	    ${HABANA_REPO}/habanalabs-firmware-tools-${DRIVER_VERSION}.${REDHAT_VERSION}.$(arch).rpm \
+	    ${HABANA_REPO}/habanalabs-firmware-tools-${DRIVER_VERSION}.${REDHAT_VERSION}.$(arch).rpm 
 	    ${HABANA_REPO}/habanalabs-thunk-${DRIVER_VERSION}.${REDHAT_VERSION}.$(arch).rpm
 
 # Install habanalabs modules,firmware and libraries
@@ -48,7 +56,7 @@ RUN rpm -ivh ${HABANA_REPO}/habanalabs-firmware-${DRIVER_VERSION}.${REDHAT_VERSI
 #    habanalabs-firmware-tools-${DRIVER_VERSION}.${REDHAT_VERSION} \
 #    habanalabs-thunk-${DRIVER_VERSION}.${REDHAT_VERSION}
     
-RUN depmod -a 
+#RUN depmod -a 
 
 # Include growfs service
 #COPY build/usr /usr
