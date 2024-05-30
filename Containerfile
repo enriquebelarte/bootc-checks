@@ -21,7 +21,7 @@ RUN . /etc/os-release \
        kernel-devel-matched${KERNEL_VERSION:+-}${KERNEL_VERSION}.el9_4 \
        kernel-modules${KERNEL_VERSION:+-}${KERNEL_VERSION}.el9_4 \
        elfutils-libelf-devel gcc make git kmod \
-       vim-filesystem rpmrebuild
+       vim-filesystem 
 # Dependencies for habanalabs packages
 RUN dnf -y install cmake libnl3-devel valgrind-devel pciutils systemd-devel
 #COPY habana.repo /etc/yum.repos.d/
@@ -38,6 +38,7 @@ WORKDIR /var/tmp
 RUN curl -o habanalabs-${DRIVER_VERSION}.${REDHAT_VERSION}.noarch.rpm ${HABANA_REPO}/habanalabs-${DRIVER_VERSION}.${REDHAT_VERSION}.noarch.rpm
 
 # Modify rpm spec for builds on different kernel versions other than build host
+RUN rpm -ivh https://kojipkgs.fedoraproject.org//packages/rpmrebuild/2.16/3.el9/noarch/rpmrebuild-2.16-3.el9.noarch.rpm
 RUN rpmrebuild --change-spec-preamble='sed "s/BuildArch:     noarch/BuildArch:     x86_64/g"'  --change-spec-post="sed 's|^/usr/sbin/dkms add|KERNEL_DIR=${KERNEL_HEADERS_PATH} &|'" --change-spec-post="sed 's|^/usr/sbin/dkms build|KERNEL_DIR=${KERNEL_HEADERS_PATH} &|'" --package habanalabs-1.15.1-15.el9.noarch.rpm
 
 
