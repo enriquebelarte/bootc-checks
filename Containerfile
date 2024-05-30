@@ -21,7 +21,7 @@ RUN . /etc/os-release \
        kernel-devel-matched${KERNEL_VERSION:+-}${KERNEL_VERSION}.el9_4 \
        kernel-modules${KERNEL_VERSION:+-}${KERNEL_VERSION}.el9_4 \
        elfutils-libelf-devel gcc make git kmod \
-       vim-filesystem 
+       vim-filesystem rpm-build 
 # Dependencies for habanalabs packages
 RUN dnf -y install cmake libnl3-devel valgrind-devel pciutils systemd-devel
 #COPY habana.repo /etc/yum.repos.d/
