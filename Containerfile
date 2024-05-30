@@ -40,6 +40,7 @@ RUN curl -L -o habanalabs-${DRIVER_VERSION}.${REDHAT_VERSION}.noarch.rpm https:/
 
 # Modify rpm spec for builds on different kernel versions other than build host
 RUN rpm -ivh https://kojipkgs.fedoraproject.org//packages/rpmrebuild/2.16/3.el9/noarch/rpmrebuild-2.16-3.el9.noarch.rpm
+WORKDIR /root
 RUN touch /root/.rpmmacros && echo "%_topdir    /var/tmp/rpmbuild" >> /root/.rpmmacros
 RUN RPMREBUILD_TMPDIR=/var/tmp/rpmrebuild rpmrebuild --directory=/var/tmp/ \
     --change-spec-preamble='sed "s/BuildArch:     noarch/BuildArch:     x86_64/g"'  \
