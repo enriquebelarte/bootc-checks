@@ -36,12 +36,12 @@ RUN rpm -ivh https://dl.fedoraproject.org/pub/epel/9/Everything/x86_64/Packages/
 
 # Download main habanalabs package
 WORKDIR /var/tmp
-COPY custom_headers.sh custom_headers.sh
 RUN curl -L -o habanalabs-${DRIVER_VERSION}.${REDHAT_VERSION}.noarch.rpm https://vault.habana.ai/artifactory/rhel/9/9.2/habanalabs-1.15.1-15.el9.noarch.rpm 
 
 # Modify rpm spec for builds on different kernel versions other than build host
 RUN rpm -ivh https://kojipkgs.fedoraproject.org//packages/rpmrebuild/2.16/3.el9/noarch/rpmrebuild-2.16-3.el9.noarch.rpm
 WORKDIR /root
+COPY custom_headers.sh custom_headers.sh
 RUN touch /root/.rpmmacros && echo "%_topdir    /var/tmp/rpmbuild" >> /root/.rpmmacros
 RUN RPMREBUILD_TMPDIR=/var/tmp/rpmrebuild rpmrebuild --directory=/var/tmp/ \
     --change-spec-preamble='sed "s/BuildArch:     noarch/BuildArch:     x86_64/g"'  \
