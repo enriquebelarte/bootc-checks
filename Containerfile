@@ -36,6 +36,7 @@ RUN rpm -ivh https://dl.fedoraproject.org/pub/epel/9/Everything/x86_64/Packages/
 
 # Download main habanalabs package
 WORKDIR /var/tmp
+COPY custom_headers.sh custom_headers.sh
 RUN curl -L -o habanalabs-${DRIVER_VERSION}.${REDHAT_VERSION}.noarch.rpm https://vault.habana.ai/artifactory/rhel/9/9.2/habanalabs-1.15.1-15.el9.noarch.rpm 
 
 # Modify rpm spec for builds on different kernel versions other than build host
