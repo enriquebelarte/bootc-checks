@@ -50,7 +50,7 @@ RUN RPMREBUILD_TMPDIR=/var/tmp/rpmrebuild rpmrebuild --directory=/var/tmp/ \
     #--change-spec-post="sed 's|^/usr/sbin/dkms add|KERNELDIR=${KERNEL_HEADERS_PATH} &|'" \
     #--change-spec-post="sed 's|^/usr/sbin/dkms build|KERNELDIR=${KERNEL_HEADERS_PATH} &|'" \
     #--change-spec-post="sed 's|\$kernelver|${KERNEL_FULL_VER}|g'" \
-    --change-spec-post="sed 's@/usr/sbin/dkms add -m habanalabs@KERNELDIR=${KERNEL_DIR} /usr/sbin/dkms install --kernelsourcedir ${KERNEL_DIR} -m habanalabs@g'" \
+    --change-spec-post="sed 's@/usr/sbin/dkms add -m habanalabs@KERNELDIR=${KERNEL_DIR} /usr/sbin/dkms add --kernelsourcedir ${KERNEL_DIR} -m habanalabs@g'" \
     --change-spec-post="sed 's@/usr/sbin/dkms install -m habanalabs@KERNELDIR=${KERNEL_DIR} /usr/sbin/dkms install --kernelsourcedir ${KERNEL_DIR} -m habanalabs@g'" \
     --package /var/tmp/habanalabs-1.15.1-15.el9.noarch.rpm 
 
