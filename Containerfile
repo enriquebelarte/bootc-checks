@@ -10,6 +10,7 @@ ARG KERNEL_VERSION='5.14.0-427.18.1'
 ARG REDHAT_VERSION='el9'
 ARG HABANA_REPO="https://vault.habana.ai/artifactory/rhel/9/9.2"
 ARG KERNEL_HEADERS_PATH="/usr/lib/modules/${KERNEL_VERSION}.el9_4.x86_64/build"
+ARG KERNEL_FULL_VER="${KERNEL_VERSION}.el9_4.x86"
 
 # Workaround? for dnf temp dir permission issue in bootc images
 RUN echo "cachedir=/var/tmp/dnf-cache" >> /etc/dnf/dnf.conf \
@@ -41,14 +42,13 @@ RUN curl -L -o habanalabs-${DRIVER_VERSION}.${REDHAT_VERSION}.noarch.rpm https:/
 # Modify rpm spec for builds on different kernel versions other than build host
 RUN rpm -ivh https://kojipkgs.fedoraproject.org//packages/rpmrebuild/2.16/3.el9/noarch/rpmrebuild-2.16-3.el9.noarch.rpm
 WORKDIR /root
-COPY custom_headers.sh custom_headers.sh
 RUN touch /root/.rpmmacros && echo "%_topdir    /var/tmp/rpmbuild" >> /root/.rpmmacros
 RUN RPMREBUILD_TMPDIR=/var/tmp/rpmrebuild rpmrebuild --directory=/var/tmp/ \
     --change-spec-preamble='sed "s/BuildArch:     noarch/BuildArch:     x86_64/g"'  \
     --change-spec-preamble="sed 's|Name: habanalabs|a BuildRoot: /var/tmp|g'" \
-    --change-spec-post="sed 's|^/usr/sbin/dkms add|KERNEL_DIR=${KERNEL_HEADERS_PATH} &|'" \
-    --change-spec-post="sed 's|^/usr/sbin/dkms build|KERNEL_DIR=${KERNEL_HEADERS_PATH} &|'" \
-    --change-files=./custom_headers.sh \
+    --change-spec-post="sed 's|^/usr/sbin/dkms add|KERNELDIR=${KERNEL_HEADERS_PATH} &|'" \
+    --change-spec-post="sed 's|^/usr/sbin/dkms build|KERNELDIR=${KERNEL_HEADERS_PATH} &|'" \
+    --change-spec-post="sed 's|\$kernelver|${KERNEL_FULL_VER}|g" \
     --package /var/tmp/habanalabs-1.15.1-15.el9.noarch.rpm 
 
 
