@@ -9,7 +9,7 @@ ARG TARGET_ARCH=''
 ARG KERNEL_VERSION='5.14.0-427.18.1'
 ARG REDHAT_VERSION='el9'
 ARG HABANA_REPO="https://vault.habana.ai/artifactory/rhel/9/9.2"
-ARG KERNEL_HEADERS_PATH="/usr/lib/modules/${KERNEL_VERSION}.el9_4.x86_64/build"
+ARG KERNEL_DIR="/usr/lib/modules/${KERNEL_VERSION}.el9_4.x86_64/build"
 ARG KERNEL_FULL_VER="${KERNEL_VERSION}.el9_4.x86"
 
 # Workaround? for dnf temp dir permission issue in bootc images
@@ -20,6 +20,7 @@ RUN . /etc/os-release \
     && export OS_VERSION_MAJOR="${OS_VERSION_MAJOR:-$(echo ${VERSION} | cut -d'.' -f 1)}" \
     && export TARGET_ARCH="${TARGET_ARCH:-$(arch)}" \
     && dnf -y update && dnf -y install kernel-headers${KERNEL_VERSION:+-}${KERNEL_VERSION}.el9_4 \
+       kernel-devel${KERNEL_VERSION:+-}${KERNEL_VERSION}.el9_4 \
        kernel-devel-matched${KERNEL_VERSION:+-}${KERNEL_VERSION}.el9_4 \
        kernel-modules${KERNEL_VERSION:+-}${KERNEL_VERSION}.el9_4 \
        elfutils-libelf-devel gcc make git kmod \
@@ -46,9 +47,11 @@ RUN touch /root/.rpmmacros && echo "%_topdir    /var/tmp/rpmbuild" >> /root/.rpm
 RUN RPMREBUILD_TMPDIR=/var/tmp/rpmrebuild rpmrebuild --directory=/var/tmp/ \
     --change-spec-preamble='sed "s/BuildArch:     noarch/BuildArch:     x86_64/g"'  \
     --change-spec-preamble="sed 's|Name: habanalabs|a BuildRoot: /var/tmp|g'" \
-    --change-spec-post="sed 's|^/usr/sbin/dkms add|KERNELDIR=${KERNEL_HEADERS_PATH} &|'" \
-    --change-spec-post="sed 's|^/usr/sbin/dkms build|KERNELDIR=${KERNEL_HEADERS_PATH} &|'" \
-    --change-spec-post="sed 's|\$kernelver|${KERNEL_FULL_VER}|g'" \
+    #--change-spec-post="sed 's|^/usr/sbin/dkms add|KERNELDIR=${KERNEL_HEADERS_PATH} &|'" \
+    #--change-spec-post="sed 's|^/usr/sbin/dkms build|KERNELDIR=${KERNEL_HEADERS_PATH} &|'" \
+    #--change-spec-post="sed 's|\$kernelver|${KERNEL_FULL_VER}|g'" \
+    --change-spec-post="sed 's@/usr/sbin/dkms add -m habanalabs@KERNELDIR=${KERNEL_DIR} /usr/sbin/dkms install --kernelsourcedir ${KERNEL_DIR} -m habanalabs'" \
+    --change-spec-post="sed 's@/usr/sbin/dkms install -m habanalabs@KERNELDIR=${KERNEL_DIR} /usr/sbin/dkms install --kernelsourcedir ${KERNEL_DIR} -m habanalabs'" \
     --package /var/tmp/habanalabs-1.15.1-15.el9.noarch.rpm 
 
 
