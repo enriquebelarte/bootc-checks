@@ -54,7 +54,7 @@ RUN RPMREBUILD_TMPDIR=/var/tmp/rpmrebuild rpmrebuild --directory=/var/tmp/ \
     --change-spec-post="sed 's@/usr/sbin/dkms install -m habanalabs@KERNELDIR=${KERNEL_DIR} /usr/sbin/dkms install --kernelsourcedir ${KERNEL_DIR} -m habanalabs@g'" \
     --package /var/tmp/habanalabs-1.15.1-15.el9.noarch.rpm 
 
-
+RUN rpmrebuild -s spec.spec --package /var/tmp/habanalabs-1.15.1-15.el9.noarch.rpm && cat spec.spec
 # Install packages without using libdnf
 RUN rpm -ivh ${HABANA_REPO}/habanalabs-firmware-${DRIVER_VERSION}.${REDHAT_VERSION}.$(arch).rpm \
 	    #${HABANA_REPO}/habanalabs-${DRIVER_VERSION}.${REDHAT_VERSION}.noarch.rpm \
