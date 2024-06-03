@@ -1,5 +1,5 @@
 ARG BASEIMAGE="registry.redhat.io/rhel9/rhel-bootc:9.4"
-#ARG BASEIMAGE="quay.io/centos-bootc/centos-bootc:stream9"
+ARG BASEIMAGE="quay.io/centos-bootc/centos-bootc:stream9"
 #ARG BASEIMAGE="quay.io/centos/centos:stream9"
 FROM ${BASEIMAGE}
 
@@ -13,8 +13,8 @@ ARG KERNEL_DIR="/usr/lib/modules/${KERNEL_VERSION}.el9_4.x86_64/build"
 ARG KERNEL_FULL_VER="${KERNEL_VERSION}.el9_4.x86"
 
 # Workaround? for dnf temp dir permission issue in bootc images
-RUN echo "cachedir=/var/tmp/dnf-cache" >> /etc/dnf/dnf.conf \
-     && mkdir -p /var/tmp/dnf-cache && chown root:root /var/tmp/dnf-cache && chmod 755 /var/tmp/dnf-cache
+#RUN echo "cachedir=/var/tmp/dnf-cache" >> /etc/dnf/dnf.conf \
+#     && mkdir -p /var/tmp/dnf-cache && chown root:root /var/tmp/dnf-cache && chmod 755 /var/tmp/dnf-cache
 
 RUN . /etc/os-release \
     && export OS_VERSION_MAJOR="${OS_VERSION_MAJOR:-$(echo ${VERSION} | cut -d'.' -f 1)}" \
