@@ -27,42 +27,42 @@ RUN . /etc/os-release \
        vim-filesystem rpm-build 
 # Dependencies for habanalabs packages
 RUN dnf -y install cmake libnl3-devel valgrind-devel pciutils systemd-devel
-#COPY habana.repo /etc/yum.repos.d/
-#RUN yum -y update
+COPY habana.repo /etc/yum.repos.d/
+RUN yum -y update
 
 # EPEL and CRB packages (without libdnf)
-RUN rpm -ivh https://dl.fedoraproject.org/pub/epel/9/Everything/x86_64/Packages/p/pandoc-common-2.14.0.3-17.el9.noarch.rpm \
-    https://dl.fedoraproject.org/pub/epel/9/Everything/x86_64/Packages/p/pandoc-2.14.0.3-17.el9.x86_64.rpm \
-    https://mirror.stream.centos.org/9-stream/CRB/x86_64/os/Packages/ninja-build-1.10.2-6.el9.x86_64.rpm \
-    https://dl.fedoraproject.org/pub/epel/9/Everything/x86_64/Packages/d/dkms-3.0.13-1.el9.noarch.rpm
-
-# Download main habanalabs package
-WORKDIR /var/tmp
-RUN curl -L -o habanalabs-${DRIVER_VERSION}.${REDHAT_VERSION}.noarch.rpm https://vault.habana.ai/artifactory/rhel/9/9.2/habanalabs-1.15.1-15.el9.noarch.rpm 
-
-# Modify rpm spec for builds on different kernel versions other than build host
-RUN rpm -ivh https://kojipkgs.fedoraproject.org//packages/rpmrebuild/2.16/3.el9/noarch/rpmrebuild-2.16-3.el9.noarch.rpm
-WORKDIR /root
-RUN touch /root/.rpmmacros && echo "%_topdir    /var/tmp/rpmbuild" >> /root/.rpmmacros
-RUN RPMREBUILD_TMPDIR=/var/tmp/rpmrebuild rpmrebuild --directory=/var/tmp/ \
-    --change-spec-preamble='sed "s/BuildArch:     noarch/BuildArch:     x86_64/g"'  \
-    --change-spec-preamble="sed 's|Name: habanalabs|a BuildRoot: /var/tmp|g'" \
-    #--change-spec-post="sed 's|^/usr/sbin/dkms add|KERNELDIR=${KERNEL_HEADERS_PATH} &|'" \
-    #--change-spec-post="sed 's|^/usr/sbin/dkms build|KERNELDIR=${KERNEL_HEADERS_PATH} &|'" \
-    #--change-spec-post="sed 's|\$kernelver|${KERNEL_FULL_VER}|g'" \
-    --change-spec-post="sed 's@/usr/sbin/dkms add -m habanalabs@KERNELDIR=${KERNEL_DIR} /usr/sbin/dkms add --kernelsourcedir ${KERNEL_DIR} -m habanalabs@g'" \
-    --change-spec-post="sed 's@/usr/sbin/dkms install -m habanalabs@KERNELDIR=${KERNEL_DIR} /usr/sbin/dkms install --kernelsourcedir ${KERNEL_DIR} -m habanalabs@g'" \
-    --package /var/tmp/habanalabs-1.15.1-15.el9.noarch.rpm 
-
-RUN rpmrebuild -s spec.spec --package /var/tmp/habanalabs-1.15.1-15.el9.noarch.rpm && cat spec.spec
-# Install packages without using libdnf
-RUN rpm -ivh ${HABANA_REPO}/habanalabs-firmware-${DRIVER_VERSION}.${REDHAT_VERSION}.$(arch).rpm \
-	    #${HABANA_REPO}/habanalabs-${DRIVER_VERSION}.${REDHAT_VERSION}.noarch.rpm \
-             /var/tmp/x86_64/habanalabs-1.15.1-15.el9.x86_64.rpm \
-	    ${HABANA_REPO}/habanalabs-rdma-core-${DRIVER_VERSION}.${REDHAT_VERSION}.noarch.rpm \
-            ${HABANA_REPO}/habanalabs-thunk-${DRIVER_VERSION}.${REDHAT_VERSION}.$(arch).rpm \
-	    ${HABANA_REPO}/habanalabs-firmware-tools-${DRIVER_VERSION}.${REDHAT_VERSION}.$(arch).rpm 
-
+# RUN rpm -ivh https://dl.fedoraproject.org/pub/epel/9/Everything/x86_64/Packages/p/pandoc-common-2.14.0.3-17.el9.noarch.rpm \
+#    https://dl.fedoraproject.org/pub/epel/9/Everything/x86_64/Packages/p/pandoc-2.14.0.3-17.el9.x86_64.rpm \
+#    https://mirror.stream.centos.org/9-stream/CRB/x86_64/os/Packages/ninja-build-1.10.2-6.el9.x86_64.rpm \
+#    https://dl.fedoraproject.org/pub/epel/9/Everything/x86_64/Packages/d/dkms-3.0.13-1.el9.noarch.rpm
+#
+## Download main habanalabs package
+#WORKDIR /var/tmp
+#RUN curl -L -o habanalabs-${DRIVER_VERSION}.${REDHAT_VERSION}.noarch.rpm https://vault.habana.ai/artifactory/rhel/9/9.2/habanalabs-1.15.1-15.el9.noarch.rpm 
+#
+## Modify rpm spec for builds on different kernel versions other than build host
+#RUN rpm -ivh https://kojipkgs.fedoraproject.org//packages/rpmrebuild/2.16/3.el9/noarch/rpmrebuild-2.16-3.el9.noarch.rpm
+#WORKDIR /root
+#RUN touch /root/.rpmmacros && echo "%_topdir    /var/tmp/rpmbuild" >> /root/.rpmmacros
+#RUN RPMREBUILD_TMPDIR=/var/tmp/rpmrebuild rpmrebuild --directory=/var/tmp/ \
+#    --change-spec-preamble='sed "s/BuildArch:     noarch/BuildArch:     x86_64/g"'  \
+#    --change-spec-preamble="sed 's|Name: habanalabs|a BuildRoot: /var/tmp|g'" \
+#    #--change-spec-post="sed 's|^/usr/sbin/dkms add|KERNELDIR=${KERNEL_HEADERS_PATH} &|'" \
+#    #--change-spec-post="sed 's|^/usr/sbin/dkms build|KERNELDIR=${KERNEL_HEADERS_PATH} &|'" \
+#    #--change-spec-post="sed 's|\$kernelver|${KERNEL_FULL_VER}|g'" \
+#    --change-spec-post="sed 's@/usr/sbin/dkms add -m habanalabs@KERNELDIR=${KERNEL_DIR} /usr/sbin/dkms add --kernelsourcedir ${KERNEL_DIR} -m habanalabs@g'" \
+#    --change-spec-post="sed 's@/usr/sbin/dkms install -m habanalabs@KERNELDIR=${KERNEL_DIR} /usr/sbin/dkms install --kernelsourcedir ${KERNEL_DIR} -m habanalabs@g'" \
+#    --package /var/tmp/habanalabs-1.15.1-15.el9.noarch.rpm 
+#
+#RUN rpmrebuild -s spec.spec --package /var/tmp/habanalabs-1.15.1-15.el9.noarch.rpm && cat spec.spec
+## Install packages without using libdnf
+#RUN rpm -ivh ${HABANA_REPO}/habanalabs-firmware-${DRIVER_VERSION}.${REDHAT_VERSION}.$(arch).rpm \
+#	    #${HABANA_REPO}/habanalabs-${DRIVER_VERSION}.${REDHAT_VERSION}.noarch.rpm \
+#             /var/tmp/x86_64/habanalabs-1.15.1-15.el9.x86_64.rpm \
+#	    ${HABANA_REPO}/habanalabs-rdma-core-${DRIVER_VERSION}.${REDHAT_VERSION}.noarch.rpm \
+#            ${HABANA_REPO}/habanalabs-thunk-${DRIVER_VERSION}.${REDHAT_VERSION}.$(arch).rpm \
+#	    ${HABANA_REPO}/habanalabs-firmware-tools-${DRIVER_VERSION}.${REDHAT_VERSION}.$(arch).rpm 
+#
 # Install habanalabs modules,firmware and libraries
 #RUN dnf -y install habanalabs-firmware-${DRIVER_VERSION}.${REDHAT_VERSION} \
 #    habanalabs-${DRIVER_VERSION}.${REDHAT_VERSION} \

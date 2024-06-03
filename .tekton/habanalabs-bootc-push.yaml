@@ -222,6 +222,8 @@ spec:
         value: $(tasks.clone-repository.results.commit)
       - name: BUILD_ARGS_FILE
         value: $(params.build-args-file)
+      - name: PLATFORM
+        value: linux/x86_64
       runAfter:
       - prefetch-dependencies
       taskRef:
@@ -229,7 +231,7 @@ spec:
         - name: name
           value: buildah
         - name: bundle
-          value: quay.io/redhat-appstudio-tekton-catalog/task-buildah:0.1@sha256:7cd80204a133c96ccc72bb8d6be0caeaf5014924e679d3686560c8e54cb87d24
+          value: quay.io/redhat-appstudio-tekton-catalog/task-buildah-remote:0.1@sha256:de535feb937ed41bd89aa8470d106846efe520fcb8828c86e29a0b7eb06f2548 
         - name: kind
           value: task
         resolver: bundles
