@@ -1,2 +1,2 @@
-FROM registry.redhat.io/rhel9/rhel-bootc@sha256:a41ad8981e7380123f0a8d90dfab20f0dea718b66029b39994125f4fa3a1d43b
+FROM quay.io/centos-bootc/centos-bootc:stream9 
 RUN getenforce
